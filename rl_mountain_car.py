@@ -50,6 +50,9 @@ alpha = 0.1
 gamma = 0.95
 
 
+theta = [np.zeros((512, 1)), np.zeros((512, 1)), np.zeros((512, 1))]
+
+
 def policy(S, weights, epsilon) :
     state = S / tile_width
     rand = np.random.randint(3)
@@ -58,7 +61,6 @@ def policy(S, weights, epsilon) :
         p = (1 - epsilon, epsilon))
 
 
-theta = [np.zeros((512, 1)), np.zeros((512, 1)), np.zeros((512, 1))]
 def q(S, A, weights) :
     state = S / tile_width
     tl = tiles.tiles(num_tilings, memsize, (state[0], state[1]))
