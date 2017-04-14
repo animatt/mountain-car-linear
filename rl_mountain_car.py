@@ -28,16 +28,14 @@ class lim :
 
 
 def bound(position, velocity) :
-    if position >= lim.distmax :
-        game_in_progress = False
-        return (game_in_progress, lim.distmax, \
-            np.minimum(velocity, lim.velomax) if velocity >= lim.velomin \
-            else np.maximum(velocity, lim.velomin))
-    else :
-        game_in_progress = True
-        return (game_in_progress, np.maximum(position, lim.distmin), \
-            np.maximum(velocity, lim.velomin) if velocity <= lim.velomax \
-            else np.minimum(velocity, lim.velomax))
+    vel = np.maximum(lim.velomin, velocity) if velocity <= lim.velomax \
+        else lim.velomax
+    pos = np.maximum(position + vel, lim.distmin) if position + vel <= lim.distmax \
+        else lim.distmax
+    game_in_progress = True if pos == lim.distmax else False
+    return (game_in_progress, pos, vel)
+    # velocity_t+1 = bound(velocity_t + A_t - cos(3 * position_t))
+    # position_t+1 = bound(position_t + velocity_t+1)
 
 
 # initialize agent
@@ -69,11 +67,17 @@ def q(S_tiles, A, weights) :
 converging = True
 while converging :
 
-    S = np.random.uniform(low = -0.6, high = -0.4), 0 # position, velocity
-    A = policy(S, theta, epsilon)
+    pos, vel = np.random.uniform(low = -0.6, high = -0.4), 0 # position, velocity
+    S1 = tiles.tiles(num_tilings, memsize, (pos / tile_width, vel / tile_width))
+    A1 = policy(S1, theta, epsilon)
 
-    S1 = tiles.tiles(num_tilings, memsize, (state[0] / tile_width, state[1] / tile_width))
+    # trace = [0, 0, S1, A1]
+
 
     theta[A][S1] += alpha * (-1 + gamma * q(S2, A2, theta[A2]) - q(S1, A, theta[A])) # incomplete
     game_in_progress = True
     while game_in_progress :
+        S1 = S2
+        A1 = A2
+
+        pos, vel = bound()
