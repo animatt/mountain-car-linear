@@ -67,17 +67,28 @@ def q(S_tiles, A, weights) :
 converging = True
 while converging :
 
-    pos, vel = np.random.uniform(low = -0.6, high = -0.4), 0 # position, velocity
-    S1 = tiles.tiles(num_tilings, memsize, (pos / tile_width, vel / tile_width))
+    pos1, vel1 = np.random.uniform(low = -0.6, high = -0.4), 0 # position, velocity
+    S1 = tiles.tiles(num_tilings, memsize, (pos1 / tile_width, vel1 / tile_width))
     A1 = policy(S1, theta, epsilon)
 
-    # trace = [0, 0, S1, A1]
+    pos2, vel2 = bound(pos1, vel1 + .001 * (A1 - 1) - .0025 * np.cos(3 * pos1))
+    S2 = tiles.tiles(num_tilings, memsize, (pos2 / tile_width, vel2 / tile_width))
+    A2 = policy(S2, theta, epsilon)
 
+    theta[A2][S1] += alpha * (-1 + gamma * q(S2, A2, theta) - q(S1, A1, theta))
 
-    theta[A][S1] += alpha * (-1 + gamma * q(S2, A2, theta[A2]) - q(S1, A, theta[A])) # incomplete
     game_in_progress = True
     while game_in_progress :
+        pos1, vel1 = pos2, vel2
         S1 = S2
         A1 = A2
 
-        pos, vel = bound()
+        game_in_progress, pos2, vel2 \
+            = bound(pos1, vel1 + .001 * (A1 - 1) - .0025 * np.cos(3 * pos1))
+
+        S2 = tiles.tiles(num_tilings, memsize, (pos2 / tile_width, vel2 / tile_width))
+        A2 = policy(S2, theta, epsilon)
+
+        theta[A1][S1] += alpha * (-1 + gamma * q(S2, A2, theta) - q(S1, A1, theta))
+# velocity_t+1 = bound(velocity_t + A_t - cos(3 * position_t))
+# position_t+1 = bound(position_t + velocity_t+1)
