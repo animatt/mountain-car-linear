@@ -8,9 +8,9 @@ import matplotlib.pyplot as plt
 #auxilary functions
 def argmax(function, S, f_domain, weights) :
     largest = float('-inf')
-    for ind in frange :
-        if function(S, ind, weigths) > largest :
-            largest = function(S, ind, weigths)
+    for ind in f_domain :
+        if function(S, ind, weights) > largest :
+            largest = function(S, ind, weights)
             action = ind
     return action
 
@@ -71,7 +71,7 @@ while converging :
     S1 = tiles.tiles(num_tilings, memsize, (pos1 / tile_width, vel1 / tile_width))
     A1 = policy(S1, theta, epsilon)
 
-    pos2, vel2 = bound(pos1, vel1 + .001 * (A1 - 1) - .0025 * np.cos(3 * pos1))
+    _, pos2, vel2 = bound(pos1, vel1 + .001 * (A1 - 1) - .0025 * np.cos(3 * pos1))
     S2 = tiles.tiles(num_tilings, memsize, (pos2 / tile_width, vel2 / tile_width))
     A2 = policy(S2, theta, epsilon)
 
@@ -90,5 +90,7 @@ while converging :
         A2 = policy(S2, theta, epsilon)
 
         theta[A1][S1] += alpha * (-1 + gamma * q(S2, A2, theta) - q(S1, A1, theta))
+
+
 # velocity_t+1 = bound(velocity_t + A_t - cos(3 * position_t))
 # position_t+1 = bound(position_t + velocity_t+1)
