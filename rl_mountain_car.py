@@ -76,7 +76,6 @@ while converging :
     S = np.random.uniform(low = -0.6, high = -0.4), 0
     A = policy((pos, vel), theta, epsilon)
 
-    theta[A] = theta[A] + alpha * (-1 + gamma * q(S2, A2, theta[A2]) - \
-        q(S, A, theta[A])) # gradient ascent incomplete
+    theta[A] += alpha * (-1 + gamma * q(S2, A2, theta[A2]) - q(S, A, theta[A])) # incomplete
     game_in_progress = True
     while game_in_progress :
