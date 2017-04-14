@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 
 #auxilary functions
-def argmax(function, S, f_range, weights) :
+def argmax(function, S, f_domain, weights) :
     largest = float('-inf')
     for ind in frange :
         if function(S, ind, weigths) > largest :
@@ -53,11 +53,9 @@ gamma = 0.95
 theta = [np.zeros((512, 1)), np.zeros((512, 1)), np.zeros((512, 1))]
 
 
-def policy(S, weights, epsilon) :
-    state = S / tile_width
+def policy(S_tiles, weights, epsilon) :
     rand = np.random.randint(3)
-    tl = tiles.tiles(num_tilings, memsize, (state[0], state[1]))
-    return np.random.choice((argmax(q, S, range(3), weights), rand), \
+    return np.random.choice((argmax(q, S_tiles, range(3), weights), rand), \
         p = (1 - epsilon, epsilon))
 
 
