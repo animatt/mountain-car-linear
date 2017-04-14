@@ -61,11 +61,9 @@ def policy(S, weights, epsilon) :
         p = (1 - epsilon, epsilon))
 
 
-def q(S, A, weights) :
-    state = S / tile_width
-    tl = tiles.tiles(num_tilings, memsize, (state[0], state[1]))
+def q(S_tiles, A, weights) :
     val = 0
-    for index in tl :
+    for index in S_tiles :
         val += weights[A][index]
     return val
 
@@ -73,9 +71,11 @@ def q(S, A, weights) :
 converging = True
 while converging :
 
-    S = np.random.uniform(low = -0.6, high = -0.4), 0
-    A = policy((pos, vel), theta, epsilon)
+    S = np.random.uniform(low = -0.6, high = -0.4), 0 # position, velocity
+    A = policy(S, theta, epsilon)
 
-    theta[A] += alpha * (-1 + gamma * q(S2, A2, theta[A2]) - q(S, A, theta[A])) # incomplete
+    S1 = tiles.tiles(num_tilings, memsize, (state[0] / tile_width, state[1] / tile_width))
+
+    theta[A][S1] += alpha * (-1 + gamma * q(S2, A2, theta[A2]) - q(S1, A, theta[A])) # incomplete
     game_in_progress = True
     while game_in_progress :
