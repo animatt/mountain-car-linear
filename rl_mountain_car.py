@@ -45,7 +45,7 @@ tile_width = 0.2125
 num_tilings = 8
 memsize = 512
 
-epsilon = 0.08
+epsilon = 0; # 0.08
 alpha = 0.0005
 gamma = 1
 
@@ -100,7 +100,7 @@ while converging :
 
     avg_ep_length = (ep_length + count * avg_ep_length) / (count + 1)
 
-    if count % 10000 == 0 :
+    if count % 1000 == 0 :
         epsilon /= 1.001
         alpha /= 1.001
         print('avg_ep_length:', avg_ep_length)
