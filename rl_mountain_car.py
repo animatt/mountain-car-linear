@@ -46,7 +46,7 @@ num_tilings = 8
 memsize = 512
 
 epsilon = 0; # 0.08
-alpha = 0.0005
+alpha = 0.0003 #.0005
 gamma = 1
 
 
